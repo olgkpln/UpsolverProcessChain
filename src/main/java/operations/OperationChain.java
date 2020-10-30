@@ -1,54 +1,67 @@
 package operations;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class OperationChain {
 
-    private Stream<String> stream;
+    private final ChainMode mode;
+    private List<Stream<String>> streams;
 
-    private OperationChain() {}
-
-    private OperationChain(Stream<String> stream) {
-        this.stream = stream;
+    private OperationChain(List<Stream<String>> streams, ChainMode mode) {
+        if (mode == ChainMode.FLATTEN) {
+            while (streams.size() > 1) {
+                var first = streams.remove(0);
+                var second = streams.remove(0);
+                var concatenated = Stream.concat(first, second);
+                streams.add(0, concatenated);
+            }
+        }
+        this.streams = streams;
+        this.mode = mode;
     }
 
-    public static OperationChain create(Stream<String> stream) {
-        return new OperationChain(stream);
+    public static OperationChain create(List<Stream<String>> stream, ChainMode mode) {
+        return new OperationChain(stream, mode);
     }
 
-    public Stream<String> stream() {
-        return stream;
+    public List<Stream<String>> streams() {
+        return streams;
     }
 
     public OperationChain sum() {
-        return new OperationChain(new Sum().execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Sum().execute(x)).collect(Collectors.toList()), mode);
     }
 
     public OperationChain avg() {
-        return new OperationChain(new Avg().execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Avg().execute(x)).collect(Collectors.toList()), mode);
     }
 
     public OperationChain min() {
-        return new OperationChain(new Min().execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Min().execute(x)).collect(Collectors.toList()), mode);
     }
 
     public OperationChain max() {
-        return new OperationChain(new Max().execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Max().execute(x)).collect(Collectors.toList()), mode);
     }
 
     public OperationChain pluck(int n) {
-        return new OperationChain(new Pluck(n).execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Pluck(n).execute(x)).collect(Collectors.toList()), mode);
     }
 
-    public OperationChain filter(int n, String x) {
-        return new OperationChain(new Filter(n, x).execute(stream));
+    public OperationChain filter(int n, String s) {
+        return new OperationChain(streams.stream().map(x -> new Filter(n, s).execute(x)).collect(Collectors.toList()), mode);
     }
 
     public OperationChain ceil() {
-        return new OperationChain(new Ceil().execute(stream));
+        return new OperationChain(streams.stream().map(x -> new Ceil().execute(x)).collect(Collectors.toList()), mode);
     }
 
-
+    public enum ChainMode {
+        FOR_EACH,
+        FLATTEN
+    }
 
 
 }
