@@ -41,6 +41,20 @@ in order to retrieve the result use the `streams()` method which effectively ret
 You can find examples of usage in the Part1.java, Part2.java and Part3.java including a proposal of how to read and write
 from and to the source and target files.
 
+Note that for part 3 there are no intermediate files created, the output of the first calculation is used as the input
+for the second part:
+```java
+var classAverage = OperationChain
+    .create(inputStreams, OperationChain.ChainMode.FOR_EACH)
+    .pluck(10)
+    .avg()
+    .streams();
+
+var maxAverage = OperationChain
+    .create(classAverage, OperationChain.ChainMode.FLATTEN)
+    .max();
+```
+
 ## How to run
 I've used Maven in order to ease the build of the project.
 You can run the different parts of the solution from the command line of directly from you IDE (IJ in my case).
