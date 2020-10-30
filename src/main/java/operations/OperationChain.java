@@ -22,8 +22,8 @@ public class OperationChain {
         this.mode = mode;
     }
 
-    public static OperationChain create(List<Stream<String>> stream, ChainMode mode) {
-        return new OperationChain(stream, mode);
+    public static OperationChain create(List<Stream<String>> streams, ChainMode mode) {
+        return new OperationChain(streams, mode);
     }
 
     public List<Stream<String>> streams() {
