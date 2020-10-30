@@ -31,10 +31,10 @@ pluck(11) -> avg -> ceil
 ```
 you should write
 ```java
-    OperationChain.create(List.of(stream), OperationChain.ChainMode.FOR_EACH)
-        .pluck(11)    
-        .avg()
-        .ceil();
+OperationChain.create(List.of(stream), OperationChain.ChainMode.FOR_EACH)
+    .pluck(11)    
+    .avg()
+    .ceil();
 ```
 in order to retrieve the result use the `streams()` method which effectively returns a `List<Stream<String>>` as a result.  
 
