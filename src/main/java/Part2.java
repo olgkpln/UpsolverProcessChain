@@ -1,6 +1,7 @@
 import operations.OperationChain;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -35,9 +36,13 @@ public class Part2 {
         int i = 0;
         for (var stream : result) {
             try (OutputStream os = new FileOutputStream(String.format("%s%d.csv", outputFilePrefix, i))) {
-                String res = stream.collect(Collectors.joining("\n"));
-                os.write(res.getBytes());
-
+                stream.forEachOrdered(x -> {
+                    try {
+                        os.write(x.getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
             }  catch (Exception e) {
                 e.printStackTrace();
             }

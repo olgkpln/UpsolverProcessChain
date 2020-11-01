@@ -1,11 +1,11 @@
 import operations.OperationChain;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Part1 {
@@ -24,10 +24,15 @@ public class Part1 {
                     .pluck(10)
                     .max()
                     .streams()
-                    .get(0)
-                    .collect(Collectors.joining("\n"));
+                    .get(0);
 
-            os.write(result.getBytes());
+            result.forEachOrdered(x -> {
+                try {
+                    os.write(x.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
